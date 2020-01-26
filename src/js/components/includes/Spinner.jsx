@@ -1,9 +1,9 @@
 import React from 'react';
 
-const spinner = (props) => {
+const spinner = ({ loading }) => {
 
     return (
-        props.loading ?
+        loading ?
             <div className="loading-center">
                 <div className="spinner-border" role="status">
                     <span className="sr-only">Loading...</span>
