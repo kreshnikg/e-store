@@ -7,11 +7,6 @@ $(function () {
     productOnClick();
     changeProduct();
 
-    $('.sort-btn').click(function () {
-        $(this).addClass('active');
-        $('.sort-btn').not(this).removeClass('active')
-    });
-
     $('.numeric-minus').click(function () {
         let numericNumber = $('.numeric-number');
         let value = parseInt(numericNumber[0].innerHTML);
@@ -29,8 +24,6 @@ $(function () {
 addActiveClass = () => {
     $(`.nav-item a[href='${path}']`).parent().addClass("active");
 };
-
-
 
 showProducts = () => {
     switch(path){

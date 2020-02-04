@@ -1,11 +1,11 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-const PaginationItem = (props) => {
+const PaginationItem = ({onChange,active,page}) => {
     return (
-        <Link to={props.url} className="my-link">
-            <span className="pagination-item">{props.page}</span>
-        </Link>
+        <a onClick={() => onChange(page)} className="my-link">
+            <span className={`pagination-item ${active && 'active'}`}>{page}</span>
+        </a>
     )
 };
 

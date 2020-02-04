@@ -1,11 +1,12 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import Layout from "./layouts/MainLayout";
+import {BrowserRouter as Router, Route, Switch, Redirect} from "react-router-dom";
+import Layout from "../layouts/MainLayout";
 
-import Index from "./Index";
-import Products from "./Products";
-import Login from "./auth/Login";
-import Register from "./auth/Register";
+import Index from "../Index";
+import Products from "../Products";
+import Login from "../auth/Login";
+import Register from "../auth/Register";
+import NotFound from "../NotFound";
 
 const Guest = (props) => {
     return (
@@ -16,6 +17,8 @@ const Guest = (props) => {
                     <Route exact path='/kompjutere' component={Products} />
                     <Route exact path='/login' component={Login} />
                     <Route exact path='/register' component={Register} />
+                    <Route path="/not-found" component={NotFound} />
+                    <Redirect to="/not-found" />
                 </Switch>
             </Layout>
         </Router>

@@ -140,11 +140,13 @@ body {
     text-decoration: none;
     color: inherit;
     /*margin: 0 20px;*/
+    cursor: pointer;
 }
 
 .sort-btn:hover{
     text-decoration: none;
-    color:black;
+    color:black !important;
+
 }
 
 .sort-btn.active {
@@ -315,4 +317,9 @@ body {
 .pagination-item {
     margin: 0 10px;
     color: #939393;
+}
+
+.pagination-item.active {
+    color: #9C68AA;
+    font-weight: bold;
 }

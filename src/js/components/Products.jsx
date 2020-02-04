@@ -9,82 +9,83 @@ import Spinner from "./includes/Spinner.jsx";
 
 const Products = (props) => {
 
-    const productList = [
-        {id:"0",img: 'src/img/produktet/kompjutere/pc.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"1",img: 'src/img/produktet/kompjutere/pc1.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"2",img: 'src/img/produktet/kompjutere/pc2.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"3",img: 'src/img/produktet/kompjutere/pc3.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"4",img: 'src/img/produktet/kompjutere/pc4.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"5",img: 'src/img/produktet/kompjutere/pc5.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"7",img: 'src/img/produktet/kompjutere/pc7.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"8",img: 'src/img/produktet/kompjutere/pc.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'},
-        {id:"1",img: 'src/img/produktet/kompjutere/pc1.jpg', name: 'Kompjuter MSI Gaming', price: '999.99'}
-    ];
-
+    const [filter, setFilter] = useState('relevant');
     const [state,setState] = useState({
         loading: true,
-        products: []
+        products: [],
+        currentPage: 1,
+        pageSize: 4
     });
     useEffect(() => {
-        axios.get('/api/products')
-            .then((response) => {
-                setState({
-                    loading:false,
-                    products: response.data
-                })
-            })
-    },[]);
+        getProducts();
+    },[state.currentPage,filter]);
 
+    const getProducts = () => {
+        setState(state=> ({
+            ...state,
+            loading:true,
+            products: []
+        }));
+        axios.get('/api/products', {
+            params: {
+                page: state.currentPage
+            }})
+            .then((response) => {
+                setState(state=> ({
+                    ...state,
+                    loading:false,
+                    products: response.data,
+
+                }))
+            })
+    };
+
+    const onPageChange = (page) => {
+        setState(state=>({
+            ...state,
+            currentPage: page
+        }))
+    };
+
+    const totalCount = 10;
     return (
         <div className="container mb-5">
             <div className="row">
                 <div className="col-md-3 mt-4">
-                    <FilterCard title="PROCESORI">
+                    <FilterCard id="procesori" show title="PROCESORI">
                         <FilterCardItem id="i7" label="Intel Core i7" />
                         <FilterCardItem id="i5" label="Intel Core i5" />
                         <FilterCardItem id="i3" label="Intel Core i3" />
                         <FilterCardItem id="celeron" label="Intel Core Celeron" />
                         <FilterCardItem id="pentium" label="Intel Core Pentium" />
                     </FilterCard>
-                    <FilterCard title="BRENDI">
+                    <FilterCard id="brendi" show title="BRENDI">
                         <FilterCardItem id="dell" label="Dell" />
                         <FilterCardItem id="logitech" label="Logitech" />
                         <FilterCardItem id="hyperx" label="HyperX" />
                         <FilterCardItem id="msi" label="Msi" />
                         <FilterCardItem id="sony" label="Sony" />
                     </FilterCard>
-                    <FilterCard title="TIPI">
+                    <FilterCard id="tipi" title="TIPI">
                         <FilterCardItem id="desktop" label="Desktop" />
                         <FilterCardItem id="notebook" label="Notebook" />
                         <FilterCardItem id="netbook" label="Netbook" />
                         <FilterCardItem id="tablet" label="Tablet" />
                         <FilterCardItem id="gaming" label="Gaming" />
                     </FilterCard>
-                    <div className="card my-card-shadow mt-1">
-                        <div className="card-body w-100">
-                            <div className="d-flex align-items-center">
-                                <span className="font-weight-bold">SISTEMI OPERATIV</span>
-                                <span className="font-weight-bold ml-auto"><i className="fa fa-plus"/></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="card my-card-shadow mt-1">
-                        <div className="card-body w-100">
-                            <div className="d-flex align-items-center">
-                                <span className="font-weight-bold">MEMORIA (RAM)</span>
-                                <span className="font-weight-bold ml-auto"><i className="fa fa-plus"/></span>
-                            </div>
-                        </div>
-                    </div>
+                    <FilterCard id="sistemi-operativ" title="SISTEMI OPERATIV">
+                    </FilterCard>
+                    <FilterCard id="memoria" title="MEMORIA (RAM)">
+                    </FilterCard>
                 </div>
                 <div className="col-md-9">
                     <h2 className="py-3">Kompjuterë</h2>
                     <div className="card my-card-shadow mb-4 d-flex align-items-center flex-row" style={{width: "99.5%"}}>
                         <div className="d-flex justify-content-between">
-                            <a className="sort-btn active" href="#">Relevante</a>
-                            <a className="sort-btn" href="#">Të reja</a>
-                            <a className="sort-btn" href="#">Të lira</a>
-                            <a className="sort-btn" href="#">Zbritje</a>
+                            <a className={`sort-btn ${filter === 'relevant' ? 'active' : ''}`} onClick={() => setFilter('relevant')}>Relevante</a>
+                            <a className={`sort-btn ${filter === 'new' ? 'active' : ''}`} onClick={() => setFilter('new')}>Të reja</a>
+                            <a className={`sort-btn ${filter === 'cheap' ? 'active' : ''}`} onClick={() => setFilter('cheap')}>Të lira</a>
+                            <a className={`sort-btn ${filter === 'discount' ? 'active' : ''}`} onClick={() => setFilter('discount')}>Zbritje</a>
                         </div>
                         <div className="ml-auto">
                             <a href="#" className="my-link"><i className="fas fa-th-large mr-3"/></a>
@@ -94,8 +95,8 @@ const Products = (props) => {
                     <div className="row" id="products-row">
                         {!state.loading ? state.products.map((product) => {
                             return (
-                                <ProductCard key={product.id}
-                                             id={product.id}
+                                <ProductCard key={product.produkti_id}
+                                             id={product.produkti_id}
                                              img={'src/img/produktet/kompjutere/pc.jpg'}
                                              name={product.emertimi}
                                              price={product.cmimi}/>
@@ -106,15 +107,11 @@ const Products = (props) => {
                             </div>
                         }
                     </div>
-                    <Pagination>
-                        <PaginationItem url="#" page="1"/>
-                        <PaginationItem url="#" page="2"/>
-                        <PaginationItem url="#" page="3"/>
-                        <PaginationItem url="#" page="..."/>
-                        <PaginationItem url="#" page="7"/>
-                        <PaginationItem url="#" page="8"/>
-                        <PaginationItem url="#" page="9"/>
-                    </Pagination>
+                    <Pagination
+                        itemsCount={totalCount}
+                        pageSize={state.pageSize}
+                        currentPage={state.currentPage}
+                        onPageChange={onPageChange}/>
                 </div>
             </div>
         </div>

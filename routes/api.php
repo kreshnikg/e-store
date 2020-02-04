@@ -7,25 +7,30 @@ use App\Controller\Auth\RegisterController;
 
 function switchRoute($request,$method,$data = null){
 
+    $perdoruesi = new PerdoruesiController;
+    $produkti = new ProduktiController;
+    $login = new LoginController;
+    $register = new RegisterController;
+
     if(!isset($request) || !isset($method))
         die("Error");
 
     if($method == 'POST') {
         if($data == null)
             die("Error");
-
+        $dataJson = json_decode($data);
         switch ($request) {
             case '/api/users' :
-                echo PerdoruesiController::store($data);
+                echo $perdoruesi->store($dataJson);
                 break;
             case '/api/products' :
-                echo ProduktiController::store($data);
+                echo $produkti->store($dataJson);
                 break;
             case '/api/login' :
-                echo LoginController::login($data);
+                echo $login->login($dataJson);
                 break;
             case '/api/register' :
-                echo RegisterController::register($data);
+                echo $register->register($dataJson);
                 break;
             default:
                 die('Not found!');
@@ -36,19 +41,19 @@ function switchRoute($request,$method,$data = null){
         $id = isset($requestArray[3]) ? $requestArray[3] : null;
         switch ($request) {
             case '/api/users' :
-                echo PerdoruesiController::index();
+                echo $perdoruesi->index();
                 break;
             case (fnmatch('/api/users/*',$request) ? true : false) :
-                echo PerdoruesiController::show($id);
-                break;
-            case '/api/products' :
-                echo ProduktiController::index();
+                echo $perdoruesi->show($id);
                 break;
             case (fnmatch('/api/products/*',$request) ? true : false) :
-                echo ProduktiController::show($id);
+                echo $produkti->show($id);
+                break;
+            case (fnmatch('/api/products*',$request) ? true : false) :
+                echo $produkti->index();
                 break;
             case '/api/logout' :
-                echo LoginController::logout();
+                echo $login->logout();
                 break;
             default:
                 die('Not found!');

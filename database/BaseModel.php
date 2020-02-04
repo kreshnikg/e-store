@@ -2,10 +2,6 @@
 
 namespace Database;
 
-// TODO Update
-// TODO Where and Select queries with params
-// TODO Pagination
-
 class BaseModel {
     private $connection;
     protected $tableName;
@@ -34,6 +30,11 @@ class BaseModel {
             array_push($result, $res);
         }
         return $result;
+    }
+
+    public function paginate($itemsPerPage,$currentPage) {
+        $this->query .= " LIMIT $itemsPerPage OFFSET $currentPage";
+        return $this;
     }
 
     public static function find($id){

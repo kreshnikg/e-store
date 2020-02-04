@@ -4,17 +4,18 @@
 namespace App\Controller\Auth;
 
 use App\Perdoruesi;
+use App\Controller\BaseController;
 
-class RegisterController
+class RegisterController extends BaseController
 {
-    public static function register($request)
+    public function register($request)
     {
-        $data = json_decode($request);
+        $this->validate($request,['emri','mbiemri','email','fjalkalimi']);
         $user = new Perdoruesi;
-        $user->emri = $data->emri;
-        $user->mbiemri = $data->mbiemri;
-        $user->email = $data->email;
-        $user->fjalkalimi = password_hash($data->fjalkalimi,PASSWORD_DEFAULT);
+        $user->emri = $request->emri;
+        $user->mbiemri = $request->mbiemri;
+        $user->email = $request->email;
+        $user->fjalkalimi = password_hash($request->fjalkalimi,PASSWORD_DEFAULT);
         $user->save();
 
         return LoginController::login($request);

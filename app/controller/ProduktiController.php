@@ -4,28 +4,32 @@ namespace App\Controller;
 
 use App\Produkti;
 
-class ProduktiController
+class ProduktiController extends BaseController
 {
-    public static function index()
+    public function index()
     {
-        return json_encode(Produkti::all());
+        $page = 0;
+        if(isset($_GET["page"]))
+            $page = $_GET["page"];
+
+        return json_encode(Produkti::select('*')->paginate(3,$page)->get());
     }
 
-    public static function store($request){
-        $data = json_decode($request);
+    public function store($request){
+        $this->middleware("auth");
         $produkti = new Produkti;
-        $produkti->emertimi = $data->name;
-        $produkti->cmimi = $data->price;
+        $produkti->emertimi = $request->name;
+        $produkti->cmimi = $request->price;
         $produkti->save();
         return "success";
     }
 
-    public static function show($id)
+    public function show($id)
     {
         return json_encode(Produkti::find($id));
     }
 
-    public static function update($request,$id)
+    public function update($request,$id)
     {
 
     }

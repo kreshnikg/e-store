@@ -7,15 +7,14 @@ use App\Perdoruesi;
 
 class LoginController extends BaseController
 {
-    public static function login($request)
+    public function login($request)
     {
-        self::validate($request,['email','fjalkalimi']);
-        $data = json_decode($request);
-        $userData = Perdoruesi::where('email', '=', $data->email)->get();
+        $this->validate($request,['email','fjalkalimi']);
+        $userData = Perdoruesi::where('email', '=', $request->email)->get();
         $success = true;
         if(count($userData) == 1) {
             $user = $userData[0];
-            if (password_verify($data->fjalkalimi, $user->fjalkalimi)) {
+            if (password_verify($request->fjalkalimi, $user->fjalkalimi)) {
                 $_SESSION["logged_in"] = true;
                 setcookie("user", json_encode(["emri" => $user->emri,"mbiemri" => $user->mbiemri]),time()+3600,"/");
             } else {
@@ -32,8 +31,9 @@ class LoginController extends BaseController
         }
     }
 
-    public static function logout()
+    public function logout()
     {
+        $this->middleware("auth");
         session_destroy();
         setcookie("user", "", time()-3600);
         return "success";

@@ -6,17 +6,23 @@ namespace App\Controller;
 
 class BaseController
 {
-    // TODO middleware
-    public function middleware()
+    protected function middleware($type)
     {
-
+        switch($type){
+            case "auth":
+                if (isset($_SESSION["logged_in"]) ) {
+                    if($_SESSION["logged_in"] != true)
+                        die("Unauthorized");
+                } else
+                    die("Unauthorized");
+                break;
+        }
     }
 
-    public static function validate($request,$rules)
+    public function validate($request,$rules)
     {
-        $data = json_decode($request);
         $exist = [];
-        foreach($data as $key => $value){
+        foreach($request as $key => $value){
             foreach($rules as $rule){
                 if($rule === $key){
                     array_push($exist, $rule);
