@@ -1,26 +1,28 @@
-import React,{useEffect, useState} from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 import Layout from "../layouts/MainLayout";
 
 import Index from "../Index";
 import Products from "../Products";
-import usePath from "../usePath";
+import useScrollToTop from "../utils/useScrollToTop";
+
+const Routes = (props) => {
+    useScrollToTop();
+    return (
+        <>
+            <Route exact path='/' component={Index}/>
+            <Route exact path='/kompjutere' component={Products}/>
+        </>
+    )
+};
 
 const App = (props) => {
-
-    const path = usePath();
-    useEffect(() => {
-        window.scrollTo(0,0);
-        console.log(path);
-    },[path]);
-
     return (
         <Router>
             <Layout loggedIn>
                 <Switch>
-                    <Route exact path='/' component={Index} />
-                    <Route exact path='/kompjutere' component={Products} />
+                    <Routes/>
                 </Switch>
             </Layout>
         </Router>

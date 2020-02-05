@@ -2,6 +2,8 @@
 
 namespace Database;
 
+use App\Perdoruesi;
+
 class BaseModel {
     private $connection;
     protected $tableName;
@@ -56,6 +58,13 @@ class BaseModel {
         $query->execute();
         $instance->connection->closeConnection();
         return "success";
+    }
+
+    public function savsss(){
+        $user = new Perdoruesi;
+        $user->emri = 'filan';
+        $user->mbiemri = 'asd';
+        $user->save();
     }
 
     public function save(){

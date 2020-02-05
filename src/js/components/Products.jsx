@@ -28,7 +28,7 @@ const Products = (props) => {
         }));
         axios.get('/api/products', {
             params: {
-                page: state.currentPage
+                page: null
             }})
             .then((response) => {
                 setState(state=> ({

@@ -1,16 +1,26 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 
 import Layout from "../layouts/Dashboard/Layout";
 
 import Index from "../dashboard/Index";
+import useScrollToTop from "../utils/useScrollToTop";
+
+const Routes = () => {
+    useScrollToTop();
+    return (
+        <>
+            <Route exact path='/' component={Index} />
+        </>
+    )
+};
 
 const App = (props) => {
     return (
         <Router>
             <Layout>
                 <Switch>
-                    <Route exact path='/' component={Index} />
+                    <Routes />
                 </Switch>
             </Layout>
         </Router>
