@@ -4,23 +4,15 @@ import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import Layout from "../layouts/Dashboard/Layout";
 
 import Index from "../dashboard/Index";
-import useScrollToTop from "../utils/useScrollToTop";
-
-const Routes = () => {
-    useScrollToTop();
-    return (
-        <>
-            <Route exact path='/' component={Index} />
-        </>
-    )
-};
+import ScrollToTop from "../utils/ScrollToTop";
 
 const App = (props) => {
     return (
         <Router>
             <Layout>
+                <ScrollToTop/>
                 <Switch>
-                    <Routes />
+                    <Route exact path='/' component={Index} />
                 </Switch>
             </Layout>
         </Router>

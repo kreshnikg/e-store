@@ -5,24 +5,16 @@ import Layout from "../layouts/MainLayout";
 
 import Index from "../Index";
 import Products from "../Products";
-import useScrollToTop from "../utils/useScrollToTop";
-
-const Routes = (props) => {
-    useScrollToTop();
-    return (
-        <>
-            <Route exact path='/' component={Index}/>
-            <Route exact path='/kompjutere' component={Products}/>
-        </>
-    )
-};
+import ScrollToTop from "../utils/ScrollToTop";
 
 const App = (props) => {
     return (
         <Router>
             <Layout loggedIn>
+                <ScrollToTop/>
                 <Switch>
-                    <Routes/>
+                    <Route exact path='/' component={Index}/>
+                    <Route exact path='/kompjutere' component={Products}/>
                 </Switch>
             </Layout>
         </Router>

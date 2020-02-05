@@ -9,7 +9,7 @@ import Register from "../auth/Register";
 import NotFound from "../NotFound";
 import Payment from "../Payment";
 
-import useScrollToTop from "../utils/useScrollToTop";
+import ScrollToTop from "../utils/ScrollToTop";
 
 class ReactClass extends React.Component {
 
@@ -59,29 +59,21 @@ const ReactHook = () => {
     )
 };
 
-const Routes = (props) => {
-    useScrollToTop();
-    return (
-        <>
-            <Route exact path='/' component={Index} />
-            <Route exact path='/kompjutere' component={Products} />
-            <Route exact path='/login' component={Login} />
-            <Route exact path='/register' component={Register} />
-            <Route exact path='/class' component={ReactClass} />
-            <Route exact path='/hook' component={ReactHook} />
-            <Route path="/payment" component={Payment} />
-            <Route path="/not-found" component={NotFound} />
-            <Redirect to="/not-found" />
-        </>
-    )
-};
-
 const Guest = (props) => {
     return (
         <Router>
             <Layout>
+                <ScrollToTop />
                 <Switch>
-                    <Routes/>
+                    <Route exact path='/' component={Index} />
+                    <Route exact path='/kompjutere' component={Products} />
+                    <Route exact path='/login' component={Login} />
+                    <Route exact path='/register' component={Register} />
+                    <Route exact path='/class' component={ReactClass} />
+                    <Route exact path='/hook' component={ReactHook} />
+                    <Route path="/payment" component={Payment} />
+                    <Route path="/not-found" component={NotFound} />
+                    <Redirect to="/not-found" />
                 </Switch>
             </Layout>
         </Router>
