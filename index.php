@@ -16,5 +16,8 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
         die("Unsupported method");
     }
 } else {
-    require __DIR__ . '/views/index.php';
+    if(fnmatch('/dashboard*',$requestUri))
+        require __DIR__ . '/views/dashboard.php';
+    else
+        require __DIR__ . '/views/index.php';
 }

@@ -19,10 +19,10 @@ class ReactClass extends React.Component {
             count: 0
         };
 
-        this.handler = this.handler.bind(this);
+        this.handler = this._handler.bind(this);
     }
 
-    handler(){
+    _handler(){
         this.setState({
             count: this.state.count + 1
         })

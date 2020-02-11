@@ -7,6 +7,8 @@ export default function Index(props) {
     }, []);
 
     return (
-        <div>Dashboard Index</div>
+        <div className="container mt-5">
+            <h5>Dashboard</h5>
+        </div>
     )
 }

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import axios from "axios";
 
 const Register = (props) => {
 
+    let [error, setError] = useState(null);
     let emri = React.createRef();
     let mbiemri = React.createRef();
     let email = React.createRef();
@@ -20,21 +21,24 @@ const Register = (props) => {
         //     return;
         // }
 
-        let data = new FormData();
-        data.append("emri", emriValue);
-        data.append("mbiemri", mbiemriValue);
-        data.append("email", emailValue);
-        data.append("fjalkalimi", passwordValue);
+        setError(null);
         axios.post('/api/register', {
             emri: emriValue,
             mbiemri: mbiemriValue,
             email: emailValue,
             fjalkalimi: passwordValue
         }).then((response) => {
-                if(response.data === "success")
-                    window.location.href = "/";
-            })
+            if (response.data === "success")
+                window.location.href = "/";
+            else if (error.response.status === 422) {
+                setError(error.response.data)
+            }
+        })
     };
+
+    let errorMessage = <div className="alert alert-danger" role="alert">
+        {error}
+    </div>;
 
     return (
         <div className="container">
@@ -48,41 +52,44 @@ const Register = (props) => {
                                     <div className="text-center">
                                         <h4 className="h4 mb-4">Mirë se erdhët!</h4>
                                     </div>
-                                    <form action="index.html">
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <input ref={emri} type="text" className="form-control mb-3 login-input"
-                                                       placeholder="Emri" required/>
-                                            </div>
-                                            <div className="col-6">
-                                                <input ref={mbiemri} type="text" className="form-control mb-3 login-input"
-                                                       placeholder="Mbiemri" required/>
-                                            </div>
+                                    {error && errorMessage}
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <input ref={emri} type="text" className="form-control mb-3 login-input"
+                                                   placeholder="Emri" required/>
                                         </div>
-                                        <input ref={email} type="text" className="form-control mb-3 login-input" placeholder="Email"
-                                               required/>
-                                        <div className="row">
-                                            <div className="col-6">
-                                                <input ref={password} type="password" className="form-control mb-3 login-input"
-                                                       placeholder="Fjalkalimi" required/>
-                                            </div>
-                                            <div className="col-6">
-                                                <input type="password" className="form-control mb-3 login-input"
-                                                       placeholder="Konfirmo fjalkalimin" required/>
-                                            </div>
+                                        <div className="col-6">
+                                            <input ref={mbiemri} type="text"
+                                                   className="form-control mb-3 login-input"
+                                                   placeholder="Mbiemri" required/>
                                         </div>
-                                        <div className="form-group form-check">
-                                            <input type="checkbox" id="check" className="form-check-input"/>
-                                            <label className="form-check-label" htmlFor="check">* Termat dhe kushtet e
-                                                përdorimit</label>
+                                    </div>
+                                    <input ref={email} type="text" className="form-control mb-3 login-input"
+                                           placeholder="Email"
+                                           required/>
+                                    <div className="row">
+                                        <div className="col-6">
+                                            <input ref={password} type="password"
+                                                   className="form-control mb-3 login-input"
+                                                   placeholder="Fjalkalimi" required/>
                                         </div>
-                                        <button type="button" onClick={registerRequest} className="btn btn-block login-btn my-btn-primary-color">Regjistrohu
-                                        </button>
-                                    </form>
+                                        <div className="col-6">
+                                            <input type="password" className="form-control mb-3 login-input"
+                                                   placeholder="Konfirmo fjalkalimin" required/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group form-check">
+                                        <input type="checkbox" id="check" className="form-check-input"/>
+                                        <label className="form-check-label" htmlFor="check">* Termat dhe kushtet e
+                                            përdorimit</label>
+                                    </div>
+                                    <button type="button" onClick={registerRequest}
+                                            className="btn btn-block login-btn my-btn-primary-color">Regjistrohu
+                                    </button>
                                     <hr/>
                                     <div className="text-center">
-                                        <Link className="small" style={{textDecoration: "none",color:"#9c68aa"}}
-                                           to="login">Keni llogari? Identifikohu këtu!</Link>
+                                        <Link className="small" style={{textDecoration: "none", color: "#9c68aa"}}
+                                              to="login">Keni llogari? Identifikohu këtu!</Link>
                                     </div>
                                 </div>
                             </div>

@@ -8,19 +8,17 @@ window.$ = window.jQuery = require('jquery');
 require("bootstrap");
 require("./custom.js");
 window.axios = require("axios");
-
-
-
-
 window.axios.defaults.headers.common = {
     'X-Requested-With': 'XMLHttpRequest'
 };
 
-if(document.getElementById('root'))
-    ReactDom.render(<App/>, document.getElementById('root'));
 
-if(document.getElementById('guest'))
-    ReactDom.render(<Guest/>, document.getElementById('guest'));
+function Render(Element,id){
+    if(document.getElementById(id))
+        ReactDom.render(<Element />, document.getElementById(id));
+}
 
-if(document.getElementById('dashboard'))
-    ReactDom.render(<Dashboard/>, document.getElementById('dashboard'));
+Render(App, 'root');
+Render(Guest, 'guest');
+Render(Dashboard, 'dashboard');
+
