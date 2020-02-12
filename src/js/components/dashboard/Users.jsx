@@ -8,7 +8,7 @@ export default function Users(props) {
     });
     useEffect(() => {
         const getData = () => {
-            axios.get('/api/users')
+            axios.get('/api/dashboard/users')
                 .then((response) => {
                     setState({
                         users: response.data,

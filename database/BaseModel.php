@@ -2,7 +2,6 @@
 
 namespace Database;
 
-use App\Perdoruesi;
 
 class BaseModel {
     private $connection;
@@ -11,22 +10,72 @@ class BaseModel {
 //    public $timestamps = false;
     private $query;
 
+    private $values = [];
+
     public function __construct(){
         $this->connection = new Connection();
     }
 
-    public function get(){
-        $cnn = $this->connection->getConnection();
+    private function addValue(...$values){
+        foreach($values as $value){
+            array_push($this->values, $value);
+        }
+    }
+
+    private function whereQuery($column,$operator,$value){
+        if (empty($this->query)) {
+            $this->query = "SELECT * FROM $this->tableName WHERE $column $operator ?";
+        } else {
+            $this->query .= " WHERE $column $operator ?";
+        }
+        $this->addValue($value);
+        return $this;
+    }
+
+    private function selectQuery($arguments){
+        $columns = '*';
+        if ($arguments != null) {
+            if(is_array($arguments[0]))
+                $columns = implode(',',$arguments[0]);
+            else if(!is_array($arguments[0]))
+                $columns = $arguments[0];
+        }
+        $this->query = "SELECT $columns FROM $this->tableName";
+        return $this;
+    }
+
+    private function excecuteQuery(){
+        $cnn = $this->connection->open();
         $query = $cnn->prepare($this->query);
+        $values = $this->values;
+
+        if(count($values) > 0){
+            $types = $this->dataTypesToString($values);
+            $query->bind_param($types,...$values);
+        }
+
         if($query)
             $query->execute();
         else{
             $error = $cnn->error;
-            $this->connection->closeConnection();
+            $this->connection->close();
             die($error);
         }
         $results = $query->get_result();
-        $this->connection->closeConnection();
+        $this->connection->close();
+        return $results;
+    }
+
+    private function insert(){
+
+    }
+
+    private function update(){
+
+    }
+
+    public function get(){
+        $results = $this->excecuteQuery();
         $result = array();
         while($res = $results->fetch_object()){
             array_push($result, $res);
@@ -40,79 +89,36 @@ class BaseModel {
     }
 
     public static function find($id){
-        $instance = new static;
-        $cnn = $instance->connection->getConnection();
-        $query = $cnn->prepare("SELECT * FROM $instance->tableName WHERE $instance->primaryKey = ?");
-        $query->bind_param('i', $id);
-        $query->execute();
-        $result = $query->get_result()->fetch_object();
-        $instance->connection->closeConnection();
+        $INSTANCE = new static;
+        $INSTANCE->query = "SELECT * FROM $INSTANCE->tableName WHERE $INSTANCE->primaryKey = ?";
+        $INSTANCE->addValue($id);
+        $result = $INSTANCE->excecuteQuery()->fetch_object();
+        if ($result != null) {
+
+        }
         return $result;
     }
 
     public static function delete($id){
-        $instance = new static;
-        $cnn = $instance->connection->getConnection();
-        $query = $cnn->prepare("DELETE FROM $instance->tableName WHERE $instance->primaryKey = ?");
-        $query->bind_param('i', $id);
-        $query->execute();
-        $instance->connection->closeConnection();
+        $INSTANCE = new static;
+        $INSTANCE->query = "DELETE FROM $INSTANCE->tableName WHERE $INSTANCE->primaryKey = ?";
+        $INSTANCE->addValue($id);
+        $INSTANCE->excecuteQuery();
         return "success";
     }
 
-    public function savsss(){
-        $user = new Perdoruesi;
-        $user->emri = 'filan';
-        $user->mbiemri = 'asd';
-        $user->save();
-    }
-
     public function save(){
-        $cnn = $this->connection->getConnection();
         $thisArray = get_object_vars($this);
         // Merri te gjitha atributet dinamike te instances perveq atributeve ndihmese
-        $data = $this->filterVars($thisArray,['connection','tableName','primaryKey','query']);
-
+        $data = $this->filterVars($thisArray,['connection','tableName','primaryKey','query','values']);
         $keys = array_keys($data);
         $values = array_values($data);
-
+        $this->addValue(...$values);
         $keysString = implode(",", $keys);
-
-        $types = $this->dataTypesToString($data);
-
         $paramSymbols = str_repeat('?,', count($keys) - 1) . '?';
-
-        $query = $cnn->prepare("INSERT INTO $this->tableName ($keysString) VALUES ($paramSymbols); ");
-        if( !$query ){
-            $error = $cnn->error;
-            $this->connection->closeConnection();
-            die($error);
-        }
-        $query->bind_param($types, ...$values);
-        $query->execute();
-        $this->connection->closeConnection();
-        return true;
-    }
-
-    private function whereQuery($column,$operator,$value){
-        if (empty($this->query)) {
-            $this->query = "SELECT * FROM $this->tableName WHERE $column $operator '$value'";
-        } else {
-            $this->query .= " WHERE $column $operator '$value'";
-        }
-        return $this;
-    }
-
-    private function selectQuery($arguments){
-        if ($arguments != null) {
-            if(is_array($arguments[0]))
-                $columns = implode(',',$arguments[0]);
-            else if(!is_array($arguments[0]))
-                $columns = $arguments[0];
-        } else
-            $columns = '*';
-        $this->query = "SELECT $columns FROM $this->tableName";
-        return $this;
+        $this->query = "INSERT INTO $this->tableName ($keysString) VALUES ($paramSymbols); ";
+        $this->excecuteQuery();
+        return "success";
     }
 
     public function orderBy($column,$order = 'ASC'){
@@ -123,9 +129,9 @@ class BaseModel {
     }
 
     public static function all(){
-        $instance = new static;
-        $instance->query = "SELECT * FROM $instance->tableName";
-        return $instance->get();
+        $INSTANCE = new static;
+        $INSTANCE->query = "SELECT * FROM $INSTANCE->tableName";
+        return $INSTANCE->get();
     }
 
     public function __call($name, $arguments){
@@ -137,11 +143,11 @@ class BaseModel {
     }
 
     public static function __callStatic($name, $arguments){
-        $instance = new static;
+        $INSTANCE = new static;
         if ($name == 'where') {
-            return $instance->whereQuery($arguments[0],$arguments[1],$arguments[2]);
+            return $INSTANCE->whereQuery($arguments[0],$arguments[1],$arguments[2]);
         } else if ($name == 'select') {
-            return $instance->selectQuery($arguments);
+            return $INSTANCE->selectQuery($arguments);
         }
     }
 
@@ -162,9 +168,9 @@ class BaseModel {
 
     /*
      * Example $data = ["string", 2,"another string" ,2.02], => $types = "sisd"
-     * String = "s";
-     * Integer = "i";
-     * Double = "d";
+     * String = 's';
+     * Integer = 'i';
+     * Double = 'd';
      */
     private function dataTypesToString($data){
         $types = '';

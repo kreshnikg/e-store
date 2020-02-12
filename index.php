@@ -13,7 +13,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
     } else if($requestMethod == 'GET') {
         switchRoute($requestUri,'GET');
     } else {
-        die("Unsupported method");
+        die("$requestMethod is not supported!");
     }
 } else {
     if(fnmatch('/dashboard*',$requestUri))

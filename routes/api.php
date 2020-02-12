@@ -15,7 +15,7 @@ function switchRoute($request,$method,$data = null){
     if(!isset($request) || !isset($method))
         die("Error");
 
-    if($method == 'POST') {
+    if($method == 'POST') { // POST Requests
         if($data == null)
             die("Error");
         $dataJson = json_decode($data);
@@ -36,7 +36,7 @@ function switchRoute($request,$method,$data = null){
                 die('Not found!');
                 break;
         }
-    } else {
+    } else { // GET Requests
         $requestArray = explode('/',$request);
         $id = isset($requestArray[3]) ? $requestArray[3] : null;
         switch ($request) {

@@ -9,7 +9,7 @@ class Connection {
     private $db = "phptest";
     private $connection;
 
-    public function getConnection(){
+    public function open(){
         $this->connection = new \mysqli($this->server,$this->user,$this->password,$this->db);
         if($this->connection->connect_error)
         {
@@ -18,7 +18,7 @@ class Connection {
         return $this->connection;
     }
 
-    public function closeConnection(){
+    public function close(){
         if(method_exists($this->connection, 'close'))
             $this->connection->close();
         else

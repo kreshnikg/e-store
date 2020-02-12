@@ -9,7 +9,7 @@ export default function Products(props) {
     });
     useEffect(() => {
         const getData = () => {
-            axios.get('/api/products')
+            axios.get('/api/dashboard/products')
                 .then((response) => {
                     setState({
                         products: response.data,
