@@ -5,7 +5,7 @@ namespace App;
 use Database\BaseModel as Model;
 
 class ProduktiKaImazhe extends Model {
-    protected $tableName = 'produkti_ka_imazhe';
-    public $primaryKey = 'id';
+    protected $table = 'produkti_ka_imazhe';
+    protected $primaryKey = 'id';
 //    public $timestamps = true;
 }

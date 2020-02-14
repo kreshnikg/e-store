@@ -18,6 +18,7 @@ if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQ
 } else {
     if(fnmatch('/dashboard*',$requestUri))
         require __DIR__ . '/views/dashboard.php';
-    else
+    else {
         require __DIR__ . '/views/index.php';
+    }
 }
