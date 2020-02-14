@@ -123,7 +123,12 @@ class BaseModel {
         $INSTANCE = new static;
         $INSTANCE->query = "SELECT * FROM $INSTANCE->table WHERE $INSTANCE->primaryKey = ?";
         $INSTANCE->addValue($id);
-        return $INSTANCE->excecuteQuery()->fetch_object();
+        $result = $INSTANCE->excecuteQuery()->fetch_object();
+        if ($result === null) {
+            echo get_class($INSTANCE) . ' nuk u gjet';
+            die(http_response_code(404));
+        }
+        return $result;
     }
 
     public static function delete($id){
