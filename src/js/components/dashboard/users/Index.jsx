@@ -1,18 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import axios from "axios";
+import axios from 'axios';
 
-export default function Products(props) {
-
+export default function Index(props) {
     const [state,setState] = useState({
-        products: [],
+        users: [],
         loader: true
     });
     useEffect(() => {
         const getData = () => {
-            axios.get('/api/dashboard/products')
+            axios.get('/api/dashboard/users')
                 .then((response) => {
                     setState({
-                        products: response.data,
+                        users: response.data,
                         loader: false
                     })
                 })
@@ -22,6 +21,6 @@ export default function Products(props) {
     }, []);
 
     return (
-        <div>Products</div>
+        <div>Users</div>
     )
 }

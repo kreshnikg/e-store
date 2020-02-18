@@ -5,52 +5,66 @@ namespace Database;
 
 class BaseModel {
 
-    /*
+    /**
      *  Database connection
      *  @var Connection
      */
     private $connection;
 
-    /*
+    /**
      *  Table name
      *  @var string
      */
     protected $table;
 
-    /*
+    /**
      *  Table primary key
      *  @var int
      */
     protected $primaryKey;
 
-    /*
+    /**
      *  Table timestamps
-     *  @var string
+     *  @var boolean
      */
 //    public $timestamps = false;
 
-    /*
+    /**
      *  Query statement
      *  @var string
      */
     private $query;
 
-    /*
+    /**
      *  Values to put in query
      *  @var array
      */
     private $values = [];
 
+    /**
+     *  Create new Connection instance
+     * @return void
+     */
     public function __construct(){
         $this->connection = new Connection();
     }
 
+    /**
+     * @param mixed ...$values
+     * @return void
+     */
     private function addValue(...$values){
         foreach($values as $value){
             array_push($this->values, $value);
         }
     }
 
+    /**
+     *  @param string $column
+     *  @param string $operator
+     *  @param string $value
+     *  @return $this
+     */
     private function whereQuery($column,$operator,$value){
         if (empty($this->query)) {
             $this->query = "SELECT * FROM $this->table WHERE $column $operator ?";
@@ -61,6 +75,10 @@ class BaseModel {
         return $this;
     }
 
+    /**
+     *  @param array|string $columns
+     *  @return $this
+     */
     private function selectQuery($columns){
         if(is_array($columns)){
             $columnsString = implode(',',$columns);
@@ -92,6 +110,12 @@ class BaseModel {
         return $results;
     }
 
+    /**
+     *  Update model on database
+     *  @param int $id
+     *  @param object $data
+     *  @return string
+     */
     public static function update($id,$data){
         $INSTANCE = new static;
         $keys = array_keys($data);
@@ -105,6 +129,9 @@ class BaseModel {
         return "success";
     }
 
+    /**
+     * @return array
+     */
     public function get(){
         $results = $this->excecuteQuery();
         $result = array();
@@ -119,6 +146,11 @@ class BaseModel {
         return $this;
     }
 
+    /**
+     *  Find model on database with id
+     *  @param int $id
+     *  @return object
+     */
     public static function find($id){
         $INSTANCE = new static;
         $INSTANCE->query = "SELECT * FROM $INSTANCE->table WHERE $INSTANCE->primaryKey = ?";
@@ -131,6 +163,11 @@ class BaseModel {
         return $result;
     }
 
+    /**
+     *  Delete model on database
+     *  @param int $id
+     *  @return string
+     */
     public static function delete($id){
         $INSTANCE = new static;
         $INSTANCE->query = "DELETE FROM $INSTANCE->table WHERE $INSTANCE->primaryKey = ?";
@@ -139,6 +176,10 @@ class BaseModel {
         return "success";
     }
 
+    /**
+     *  Save model on database
+     *  @return string
+     */
     public function save(){
         $thisArray = get_object_vars($this);
         // Merri te gjitha atributet dinamike te instances perveq atributeve ndihmese
@@ -160,6 +201,10 @@ class BaseModel {
         return $this;
     }
 
+    /**
+     *  Get all records of model on database
+     *  @return array
+     */
     public static function all(){
         $INSTANCE = new static;
         return $INSTANCE->selectQuery('*')->get();
@@ -183,7 +228,12 @@ class BaseModel {
         }
     }
 
-    // Remove items from array
+    /**
+     * Remove items from array
+     * @param $array
+     * @param array $toRemove
+     * @return array
+     */
     private function filterVars($array,$toRemove = []){
         if(count($toRemove) === 0)
             $toRemove = ['connection','table','primaryKey','query', 'values'];
@@ -200,12 +250,13 @@ class BaseModel {
         );
     }
 
-    /*
-     * Example $data = ["string", 2,"another string" ,2.02], @return $types = "sisd"
+    /**
+     * Example $data = ["string", 2,"another string" ,2.02], => $types = "sisd"
      * String = 's';
      * Integer = 'i';
      * Double = 'd';
      * @param array $data
+     * @return string
      */
     private function dataTypesToString($data){
         $types = '';

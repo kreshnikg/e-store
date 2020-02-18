@@ -5,8 +5,8 @@ import Layout from "../layouts/Dashboard/Layout";
 import ScrollToTop from "../utils/ScrollToTop";
 
 import Index from "../dashboard/Index";
-import Users from "../dashboard/Users";
-import Products from "../dashboard/Products";
+import UsersIndex from "../dashboard/users/Index";
+import ProductsIndex from "../dashboard/products/Index";
 
 const App = (props) => {
     return (
@@ -15,8 +15,8 @@ const App = (props) => {
                 <ScrollToTop/>
                 <Switch>
                     <Route exact path='/' component={Index} />
-                    <Route exact path='/users' component={Users} />
-                    <Route exact path='/products' component={Products} />
+                    <Route exact path='/users' component={UsersIndex} />
+                    <Route exact path='/products' component={ProductsIndex} />
                 </Switch>
             </Layout>
         </Router>

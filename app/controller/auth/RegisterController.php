@@ -18,6 +18,7 @@ class RegisterController extends BaseController
         $user->fjalkalimi = password_hash($request->fjalkalimi,PASSWORD_DEFAULT);
         $user->save();
 
-        return LoginController::login($request);
+        $login = new LoginController;
+        return $login->login($request);
     }
 }
