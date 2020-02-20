@@ -2,14 +2,16 @@
 
 namespace Database;
 
-trait Relations {
+trait Relations
+{
 
     /**
      * Initiate model relationships
      * @param array $relations
      * @return void
      */
-    private function bootRelations($relations){
+    private function bootRelations($relations)
+    {
         foreach ($relations as $relation) {
             $this->$relation();
         }
@@ -21,7 +23,7 @@ trait Relations {
      * @param $primaryKey
      * @return array
      */
-    private function getModelIDs($records,$primaryKey)
+    private function getModelIDs($records, $primaryKey)
     {
         $modelIDs = array();
         foreach ($records as $res) {
@@ -37,7 +39,8 @@ trait Relations {
      * Check if model has relations
      * @return boolean
      */
-    private function hasRelations(){
+    private function hasRelations()
+    {
         return count($this->with) > 0;
     }
 
@@ -45,18 +48,19 @@ trait Relations {
      * @param array $result
      * @return void
      */
-    private function addRelationDataToResult($result){
+    private function addRelationDataToResult($result)
+    {
         foreach ($this->with as $relation) {
             $model = new $relation["model"];
             $foreginKey = $relation["foreignKey"];
             $localKey = $relation["localKey"];
             $modelIDs = $this->getModelIDs($result, $foreginKey);
-            $modelIDsString = implode(",",$modelIDs);
+            $modelIDsString = implode(",", $modelIDs);
             $model->query = "SELECT * FROM $model->table WHERE $model->primaryKey IN ($modelIDsString)";
             $models = $model->get();
-            foreach($result as $res){
+            foreach ($result as $res) {
                 $name = $model->table;
-                $res->$name = current(array_filter($models, function ($mdl) use ($res, $localKey,$foreginKey) {
+                $res->$name = current(array_filter($models, function ($mdl) use ($res, $localKey, $foreginKey) {
                     return $res->$localKey == $mdl->$foreginKey;
                 }));
             }

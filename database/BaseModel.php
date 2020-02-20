@@ -6,27 +6,28 @@ class BaseModel
 {
     use Relations;
     use Timestamps;
+    use Query;
 
     /**
-     *  Database connection
+     * Database connection
      * @var Connection
      */
     private $connection;
 
     /**
-     *  Table name
+     * Table name
      * @var string
      */
     protected $table;
 
     /**
-     *  Table primary key
+     * Table primary key
      * @var int
      */
     protected $primaryKey;
 
     /**
-     *  Table timestamps
+     * Table timestamps
      * @var boolean
      */
     public $timestamps = false;
@@ -38,19 +39,7 @@ class BaseModel
     private $with = [];
 
     /**
-     *  Query statement
-     * @var string
-     */
-    private $query;
-
-    /**
-     *  Values to put in query parameters
-     * @var array
-     */
-    private $values = [];
-
-    /**
-     *  Create new Connection instance
+     * Create new Connection instance
      * @return void
      */
     public function __construct()
@@ -65,72 +54,6 @@ class BaseModel
     private function timestamps()
     {
         return $this->timestamps;
-    }
-
-    /**
-     * @param mixed ...$values
-     * @return void
-     */
-    private function addValue(...$values)
-    {
-        foreach ($values as $value) {
-            array_push($this->values, $value);
-        }
-    }
-
-    /**
-     * @param string $column
-     * @param string $operator
-     * @param string $value
-     * @return $this
-     */
-    private function whereQuery($column, $operator, $value)
-    {
-        if (empty($this->query)) {
-            $this->query = "SELECT * FROM $this->table WHERE $column $operator ?";
-        } else {
-            $this->query .= " WHERE $column $operator ?";
-        }
-        $this->addValue($value);
-        return $this;
-    }
-
-    /**
-     * @param array|string $columns
-     * @return $this
-     */
-    private function selectQuery($columns)
-    {
-        if (is_array($columns)) {
-            $columnsString = implode(',', $columns);
-        } else if (!is_array($columns))
-            $columnsString = $columns;
-        $this->query = "SELECT $columnsString FROM $this->table";
-        return $this;
-    }
-
-    /**
-     * @return false|\mysqli_result
-     */
-    private function excecuteQuery()
-    {
-        $cnn = $this->connection->open();
-        $query = $cnn->prepare($this->query);
-        $values = $this->values;
-        if ($query) {
-            if (count($values) > 0) {
-                $types = dataTypesToString($values);
-                $query->bind_param($types, ...$values);
-            }
-            $query->execute();
-        } else {
-            $error = $cnn->error;
-            $this->connection->close();
-            response($error,500);
-        }
-        $results = $query->get_result();
-        $this->connection->close();
-        return $results;
     }
 
     public static function raw($query)
@@ -153,7 +76,7 @@ class BaseModel
     }
 
     /**
-     *  Update model on database
+     * Update model on database
      * @param int $id
      * @param object $data
      * @return string
@@ -170,29 +93,6 @@ class BaseModel
         $INSTANCE->updateQuery($keysString)->where($INSTANCE->primaryKey, '=', $id);
         $INSTANCE->excecuteQuery();
         return "success";
-    }
-
-    /**
-     * Add an update query
-     * @param $columnsValues
-     * @return $this
-     */
-    private function updateQuery($columnsValues){
-        $this->query = "UPDATE $this->table SET $columnsValues";
-        return $this;
-    }
-
-    /**
-     * Convert columns to update query keys
-     * @param array $keys
-     * @return string
-     */
-    private function getKeysForUpdateQuery($keys){
-        $keysString = implode(" = ?, ", $keys) . " = ?";
-        if ($this->timestamps()) {
-            $keysString .= " ,$this->UPDATED_AT = " . date("d-m-Y");
-        }
-        return $keysString;
     }
 
     /**
@@ -214,11 +114,7 @@ class BaseModel
         return $result;
     }
 
-    public function paginate($itemsPerPage, $currentPage)
-    {
-        $this->query .= " LIMIT $itemsPerPage OFFSET $currentPage";
-        return $this;
-    }
+    public function paginate($itemsPerPage){}
 
     /**
      *  Find model on database with id
@@ -244,19 +140,8 @@ class BaseModel
     public static function delete($id)
     {
         $INSTANCE = new static;
-        $INSTANCE->deleteQuery()->where($INSTANCE->primaryKey, '=', $id);
-        $INSTANCE->excecuteQuery();
+        $INSTANCE->deleteQuery()->where($INSTANCE->primaryKey, '=', $id)->excecuteQuery();
         return "success";
-    }
-
-    /**
-     * Add a delete query
-     * @return $this
-     */
-    private function deleteQuery()
-    {
-        $this->query = "DELETE FROM $this->table";
-        return $this;
     }
 
     /**
@@ -266,7 +151,6 @@ class BaseModel
     public function save()
     {
         $thisArray = get_object_vars($this);
-        // Merri te gjitha atributet dinamike te instances perveq atributeve ndihmese
         $data = filterVars($thisArray);
         $keys = array_keys($data);
         $values = array_values($data);
@@ -284,7 +168,7 @@ class BaseModel
     }
 
     /**
-     * Order query
+     * Add an order query
      * @param $column
      * @param string $order = "ASC|DESC"
      * @return $this
