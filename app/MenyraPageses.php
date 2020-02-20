@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Database\Model as Model;
+use Database\Model;
 
 class MenyraPageses extends Model {
     protected $table = 'menyra_pageses';

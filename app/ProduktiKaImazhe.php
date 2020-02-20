@@ -2,7 +2,7 @@
 
 namespace App;
 
-use Database\Model as Model;
+use Database\Model;
 
 class ProduktiKaImazhe extends Model {
     protected $table = 'produkti_ka_imazhe';

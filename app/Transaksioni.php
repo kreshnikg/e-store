@@ -2,7 +2,7 @@
 
 namespace Model;
 
-use Database\Model as Model;
+use Database\Model;
 
 class Transaksioni extends Model {
     protected $table = 'transaksioni';
