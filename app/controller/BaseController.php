@@ -12,9 +12,9 @@ class BaseController
             case "auth":
                 if (isset($_SESSION["logged_in"]) ) {
                     if($_SESSION["logged_in"] != true)
-                        die("Unauthorized");
+                        response("Unauthorized", 401);
                 } else
-                    die("Unauthorized");
+                    response("Unauthorized", 401);
                 break;
         }
     }
@@ -38,8 +38,7 @@ class BaseController
             foreach($notSet as $ns){
                 $validationMessage->$ns = "Kjo fushë duhet të plotësohet patjeter";
             }
-            echo json_encode($validationMessage);
-            die(http_response_code(422));
+            response($validationMessage,422);
         }
     }
 }

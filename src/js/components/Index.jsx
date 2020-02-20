@@ -3,6 +3,12 @@ import {Link} from "react-router-dom";
 import ProductCard from "./includes/ProductCard";
 
 const Index = (props) => {
+
+    const getproducts = () => {
+        let data = new FormData();
+        axios.post('/api/users',{emri: "Kreshnik",mbiemri: "Gashi",email:"test@gmail.com"})
+    };
+
     return (
         <Fragment>
             <div className="container">
@@ -45,6 +51,7 @@ const Index = (props) => {
                 </div>
 
                 <h2 className="mb-3">Produktet e fundit</h2>
+                <button className="btn btn-primary" onClick={getproducts}>Click</button>
                 <div className="row mb-5">
                     <div className="col-md-3">
                         <ProductCard key={1}

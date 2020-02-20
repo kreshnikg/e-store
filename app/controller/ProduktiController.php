@@ -8,11 +8,8 @@ class ProduktiController extends BaseController
 {
     public function index()
     {
-        $page = 0;
-        if(isset($_GET["page"]))
-            $page = $_GET["page"];
-
-        return json_encode(Produkti::select('*')->paginate(3,$page)->get());
+//        return json_encode(Produkti::select('*')->get());
+        return json_encode(Produkti::with(['brendi'])->select('*')->get());
     }
 
     public function store($request){

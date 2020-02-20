@@ -8,6 +8,9 @@
       "database",
       "app",
       "app/controller"
+    ],
+    "files": [
+      "app\/Helpers\/helpers.php"
     ]
   }
 }

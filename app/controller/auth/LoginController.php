@@ -26,8 +26,7 @@ class LoginController extends BaseController
         if($success){
             return "success";
         } else {
-            echo "Email ose fjalkalimi është gabim.";
-            die(http_response_code(422));
+            response("Email ose fjalkalimi është gabim.",422);
         }
     }
 
