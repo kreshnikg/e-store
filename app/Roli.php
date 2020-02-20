@@ -2,7 +2,7 @@
 
 namespace Model;
 
-use Database\BaseModel as Model;
+use Database\Model as Model;
 
 class Roli extends Model {
     protected $table = 'roli';

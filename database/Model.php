@@ -2,7 +2,7 @@
 
 namespace Database;
 
-class BaseModel
+class Model
 {
     use Relations;
     use Timestamps;
@@ -54,11 +54,6 @@ class BaseModel
     private function timestamps()
     {
         return $this->timestamps;
-    }
-
-    public static function raw($query)
-    {
-
     }
 
     /**

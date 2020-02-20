@@ -131,4 +131,6 @@ trait Query {
     private function insertQuery(){}
 
     private function orderQuery(){}
+
+    public static function raw($query){}
 }

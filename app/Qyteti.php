@@ -2,7 +2,7 @@
 
 namespace Model;
 
-use Database\BaseModel as Model;
+use Database\Model as Model;
 
 class Qyteti extends Model {
     protected $table = 'qyteti';
